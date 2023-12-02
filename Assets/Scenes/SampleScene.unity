@@ -377,7 +377,7 @@ Transform:
   m_GameObject: {fileID: 500965224}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.0207, y: -4.89, z: 0}
+  m_LocalPosition: {x: 0.0207, y: -4.51, z: 0}
   m_LocalScale: {x: 15.2613, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -623,6 +623,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 446605315}
+  - {fileID: 1009911996}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &842447968
@@ -637,9 +638,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62a30848b28574fff9d4bd48a9028e0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 8
-  jumpingPower: 16
-  groundLayer:
+  Data: {fileID: 11400000, guid: 34e5496debeb7497abb57c5526b2e26c, type: 2}
+  _groundCheckPoint: {fileID: 1009911996}
+  _groundCheckSize: {x: 0.49, y: 0.03}
+  _groundLayer:
     serializedVersion: 2
     m_Bits: 8
 --- !u!1 &895541803
@@ -803,6 +805,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47ae32e2841fb4b34b033b742d596932, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1009911995
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1009911996}
+  m_Layer: 0
+  m_Name: Ground Checker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1009911996
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1009911995}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.11, y: -1.01, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 842447967}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1312018281
 GameObject:
   m_ObjectHideFlags: 0
@@ -927,8 +960,8 @@ Transform:
   m_GameObject: {fileID: 1312018281}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.14, y: -1.93, z: 0}
-  m_LocalScale: {x: 8.616529, y: 5.2088, z: 1}
+  m_LocalPosition: {x: -5.95, y: -2.4, z: 0}
+  m_LocalScale: {x: 5.7739363, y: 5.2088, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
