@@ -12,6 +12,7 @@ public class SwarmLogic : MonoBehaviour
     [SerializeField] private GameObject spawnBirds;
     [SerializeField] private Transform cameraTransform;
     private GameObject player;
+    private PlayerMovement moveScript;
     [SerializeField] private GameObject floor;
     [SerializeField] private GameObject heightLimitator;
     private bool floorIsMovingDown = false;
@@ -21,6 +22,7 @@ public class SwarmLogic : MonoBehaviour
     private void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player");
+        moveScript = player.GetComponent<PlayerMovement>();
         playerGravity = player.GetComponent<Rigidbody2D>().gravityScale;
     }
 
@@ -44,7 +46,7 @@ public class SwarmLogic : MonoBehaviour
         {
             player.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 4);
             player.GetComponent<Rigidbody2D>().gravityScale = 0;
-            player.GetComponent<PlayerMovement>().canJump = false;
+            //player.GetComponent<PlayerMovement>().canJump = false;
             floorIsMovingDown = true;
             heightLimitator.SetActive(true);
             Instantiate(spawnBirds, new Vector3(9f, cameraTransform.position.y, 0), Quaternion.identity);
@@ -64,7 +66,7 @@ public class SwarmLogic : MonoBehaviour
         {
             player.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 5);
             player.GetComponent<Rigidbody2D>().gravityScale = 0;
-            player.GetComponent<PlayerMovement>().canJump = false;
+            //player.GetComponent<PlayerMovement>().canJump = false;
             floorIsMovingDown = true;
             heightLimitator.SetActive(true);
             zeroGravityChangeState();
@@ -85,10 +87,10 @@ public class SwarmLogic : MonoBehaviour
         player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
         floorIsMovingDown = false;
         Instantiate(fallingPlatformStop, new Vector3(-5.5f, cameraTransform.position.y + 14, 0), Quaternion.identity);
-        await Task.Delay(7000);
-        player.GetComponent<Rigidbody2D>().gravityScale = playerGravity;
-        player.GetComponent<PlayerMovement>().canJump = true;
-        heightLimitator.SetActive(false);
+        // await Task.Delay(7000);
+        // player.GetComponent<Rigidbody2D>().gravityScale = playerGravity;
+        // //player.GetComponent<PlayerMovement>().canJump = true;
+        // heightLimitator.SetActive(false);
     }
 
     async void zeroGravity()
@@ -103,7 +105,8 @@ public class SwarmLogic : MonoBehaviour
         await Task.Delay(1000);
         floorIsMovingUp = false;
         player.GetComponent<Rigidbody2D>().gravityScale = playerGravity;
-        player.GetComponent<PlayerMovement>().canJump = true;
+        playerGravity = 0f;
+        //player.GetComponent<PlayerMovement>().canJump = true;
         heightLimitator.SetActive(false);
     }
 }
