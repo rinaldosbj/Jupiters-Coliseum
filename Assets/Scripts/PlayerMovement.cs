@@ -2,6 +2,11 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    private float horizontal;
+    [SerializeField] private float speed = 8f;
+    [SerializeField] private float jumpingPower = 16f;
+    private bool isFacingRight = true;
+    public bool canJump = true;
     public PlayerData Data;
 
     public Rigidbody2D rb { get; private set; }

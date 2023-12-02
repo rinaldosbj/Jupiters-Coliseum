@@ -1,29 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
-using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class EnemyLife : MonoBehaviour
+public class PlayerLife : MonoBehaviour
 {
-    [SerializeField] private int life = 1;
+    public int life = 1;
     private float timer = 0f;
     [SerializeField] private float cooldownTime = 1f;
     private bool canGetHit = true;
     private SpriteRenderer sprite;
-    private Rigidbody2D rb;
-    private GameObject player;
+    [SerializeField] private Text lifeText;
 
     private void Awake() 
     {
         sprite = GetComponent<SpriteRenderer>();
-        rb = GetComponent<Rigidbody2D>();
-        player = GameObject.FindGameObjectWithTag("Player");
+        lifeText.text = life.ToString();
     }
 
     private void Update()
     {
-        rb.position = Vector3.MoveTowards(transform.position,player.transform.position,0.02f);
         if (!canGetHit)
         {
             sprite.color = Color.red;
@@ -39,20 +35,35 @@ public class EnemyLife : MonoBehaviour
         }
         else 
         {
-            sprite.color = Color.blue;
+            sprite.color = Color.white;
         }
     }
 
-    public void getHit()
+    public void getHit(int amount)
     {
         if (canGetHit)
         {
-            life --;
+            life -= amount;
             canGetHit = false;
-            if (life == 0)
+            lifeText.text = life.ToString();
+            if (life <= 0)
             {
-                Destroy(gameObject);
+                Die();
             }
+            
+        }
+    }
+
+    private void Die()
+    {
+        lifeText.text = "YOU DIED";
+        Destroy(gameObject);
+    }
+
+    private void OnCollisionEnter2D(Collision2D other) {
+        if (other.collider.CompareTag("Enemy"))
+        {
+            getHit(1);
         }
     }
 }
