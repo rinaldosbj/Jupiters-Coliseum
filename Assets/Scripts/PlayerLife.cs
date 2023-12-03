@@ -61,7 +61,7 @@ public class PlayerLife : MonoBehaviour
     }
 
     private void OnCollisionEnter2D(Collision2D other) {
-        if (other.collider.CompareTag("Enemy"))
+        if (other.collider.CompareTag("Enemy") || other.collider.CompareTag("Aguia"))
         {
             getHit(1);
         }

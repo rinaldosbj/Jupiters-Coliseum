@@ -83,7 +83,7 @@ public class CombatSystem : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Enemy"))
+        if (other.CompareTag("Aguia"))
         {
             other.GetComponent<EnemyLife>().getHit();
         } else if(other.CompareTag("Jupiter")) {
@@ -93,7 +93,7 @@ public class CombatSystem : MonoBehaviour
 
     async void nowCanHit()
     {
-        await Task.Delay(100);
+        await Task.Delay(50);
         canHit = false;
     }
 }

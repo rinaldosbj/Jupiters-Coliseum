@@ -23,7 +23,7 @@ public class EnemyLife : MonoBehaviour
 
     private void Update()
     {
-        rb.position = Vector3.MoveTowards(transform.position,player.transform.position,0.02f);
+        rb.position = Vector3.MoveTowards(transform.position,player.transform.position,0.05f);
         if (!canGetHit)
         {
             sprite.color = Color.red;
@@ -39,7 +39,7 @@ public class EnemyLife : MonoBehaviour
         }
         else 
         {
-            sprite.color = Color.blue;
+            sprite.color = Color.white;
         }
     }
 

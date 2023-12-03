@@ -42,10 +42,11 @@ public class PlayerMovement : MonoBehaviour
         LastPressedJumpTime -= Time.deltaTime;
 
         _moveInput.x = Input.GetAxisRaw("Horizontal");
-
-        if (_isTransition)
+        _moveInput.y = Input.GetAxisRaw("Vertical");
+        
+        if (!_isTransition)
         {
-            _moveInput.y = Input.GetAxisRaw("Vertical");
+            
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 OnJumpInput();
@@ -110,11 +111,8 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-
         if (_moveInput.x != 0)
             CheckDirectionToFace(_moveInput.x > 0);
-
-
     }
 
     private void FixedUpdate()
@@ -196,7 +194,6 @@ public class PlayerMovement : MonoBehaviour
     private bool CanJump()
     {
         return LastOnGroundTime > 0 && !IsJumping;
-        print("oi");
     }
 
     private bool CanJumpCut()

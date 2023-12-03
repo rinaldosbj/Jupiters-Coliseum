@@ -7,8 +7,8 @@
     {
         [SerializeField] private GameObject rockTrow;
         [SerializeField] private GameObject lightning;
-        [SerializeField] private GameObject fallingPlatforms;
-        [SerializeField] private GameObject fallingPlatformStop;
+        [SerializeField] public GameObject fallingPlatforms;
+        [SerializeField] public GameObject fallingPlatformStop;
         [SerializeField] private GameObject spawnBirds;
         [SerializeField] private Transform cameraTransform;
         private GameObject player;
@@ -31,7 +31,7 @@
 
         void RandomAttack()
         {
-            int attackType = Random.Range(1, 3);
+            int attackType = Random.Range(1, 2);
 
             switch (attackType)
             {
@@ -40,9 +40,6 @@
                     break;
                 case 1:
                     LightningAttack();
-                    break;
-                case 2:
-                    FallingPlatforms();
                     break;
             }
         }
@@ -59,58 +56,27 @@
             Debug.Log("Boss performs lightning attack");
         }
 
-        void FallingPlatforms()
+        public void FallingPlatforms()
         {
-
             player.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 4);
-            player.GetComponent<Rigidbody2D>().gravityScale = 0;
-            moveScript._isTransition = false;
+            player.GetComponent<Rigidbody2D>().gravityScale = 0.05f;
+            moveScript._isTransition = true;
             floorIsMovingDown = true;
-
-            heightLimitator.SetActive(true);
+            //heightLimitator.SetActive(true);
             Instantiate(spawnBirds, new Vector3(9f, cameraTransform.position.y, 0), Quaternion.identity);
-            // zeroGravity();
-            Debug.Log("Boss releases falling platforms");
+            zeroGravity();
         }
         
         void Update()
         {
-        if (floorIsMovingDown)
-        {
-            floor.transform.position = new Vector3(floor.transform.position.x, floor.transform.position.y - 0.004f, floor.transform.position.z);
-        }
-        if (floorIsMovingUp)
-        {
-            floor.transform.position = new Vector3(floor.transform.position.x, floor.transform.position.y + 0.004f, floor.transform.position.z);
-
-            // Must stop in Platform
-            if (Input.GetKeyDown(KeyCode.O))
+            if (floorIsMovingDown)
             {
-                player.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 5);
-                player.GetComponent<Rigidbody2D>().gravityScale = 0;
-                //player.GetComponent<PlayerMovement>().canJump = false;
-                floorIsMovingDown = true;
-                heightLimitator.SetActive(true);
-                zeroGravityChangeState();
+                floor.transform.position = new Vector3(floor.transform.position.x, floor.transform.position.y - 0.004f, floor.transform.position.z);
             }
-
-            // Passarinho
-            if (Input.GetKeyDown(KeyCode.B))
+            if (floorIsMovingUp)
             {
-                Instantiate(spawnBirds, new Vector3(9f, cameraTransform.position.y-Random.Range(-2,8), 0), Quaternion.identity);
+                floor.transform.position = new Vector3(floor.transform.position.x, floor.transform.position.y + 0.004f, floor.transform.position.z);
             }
-        }
-
-        async void zeroGravityChangeState()
-        {
-            await Task.Delay(1000);
-            player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
-            player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
-            floorIsMovingDown = false;
-            Instantiate(fallingPlatformStop, new Vector3(-5.5f, cameraTransform.position.y + 14, 0), Quaternion.identity);
-            await Task.Delay(8000);
-            moveScript._isTransition = true;
-            heightLimitator.SetActive(false);
         }
 
         async void zeroGravity()
@@ -120,13 +86,11 @@
             player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
             floorIsMovingDown = false;
             Instantiate(fallingPlatforms, new Vector3(-5.5f, cameraTransform.position.y + 16, 0), Quaternion.identity);
-            await Task.Delay(12000);
+            await Task.Delay(10);
             floorIsMovingUp = true;
-            await Task.Delay(1000);
+            await Task.Delay(1);
             floorIsMovingUp = false;
-            player.GetComponent<Rigidbody2D>().gravityScale = playerGravity;
-            playerGravity = 0f;
-            //player.GetComponent<PlayerMovement>().canJump = true;
+            moveScript._isTransition = true;
             heightLimitator.SetActive(false);
         }
     }

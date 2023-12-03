@@ -55,6 +55,7 @@ public class JupiterController : MonoBehaviour
 
             if (life == 0)
             {
+                jupiter.FallingPlatforms();
                 Debug.Log("murio");
                 Destroy(gameObject);
                 Destroy(jupiter.gameObject);
