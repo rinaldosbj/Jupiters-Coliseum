@@ -8,7 +8,7 @@ public class CombatSystem : MonoBehaviour
     private SpriteRenderer sprite;
     new private BoxCollider2D collider;
     private float timer = 0f;
-    [SerializeField] private float cooldownTime = 1f;
+    [SerializeField] private float cooldownTime = 0.1f;
     private bool canHit = true;
 
     void Awake()
@@ -36,26 +36,64 @@ public class CombatSystem : MonoBehaviour
                 canHit = true;
             }
         }
-
-        if (Input.GetKeyDown(KeyCode.Z) && canHit)
-        {
-            sprite.enabled = true;
-            collider.enabled = true;
-            nowCanHit();
+        
+        if (Input.GetKeyDown(KeyCode.Z) && !Input.GetKey(KeyCode.W) && canHit) {
+            regularAttack();
         }
+        
+        if (Input.GetKey(KeyCode.W) && Input.GetKeyDown(KeyCode.Z) && canHit) {
+            upAttack();
+        }
+        
     }
+
+    void upAttack()
+    {
+        sprite.enabled = true;
+        collider.enabled = true;
+
+        // Calculate the rotation for the upward attack weapon (to point horizontally)
+        float rotationAngle = transform.localScale.x > 0 ? 90f : -90f; // Adjust the angle according to player's direction
+
+        // Set the rotation for the upward attack weapon
+        transform.localRotation = Quaternion.Euler(0f, 0f, rotationAngle);
+
+        // Set the position for the upward attack weapon
+        transform.localPosition = new Vector3(0.5f, 1.5f, 0f); // Adjust the position if needed
+
+        nowCanHit();
+        Debug.Log("Up attack");
+    }
+
+    void regularAttack()
+    {
+        sprite.enabled = true;
+        collider.enabled = true;
+
+        // Reset the rotation for the regular attack weapon
+        transform.localRotation = Quaternion.identity;
+
+        // Reset the position for the regular attack weapon
+        transform.localPosition = new Vector3(1f, 0.5f, 0f); // Adjust the position if needed
+
+        nowCanHit();
+        Debug.Log("Regular attack");
+    }
+
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Enemy"))
         {
             other.GetComponent<EnemyLife>().getHit();
+        } else if(other.CompareTag("Jupiter")) {
+            other.GetComponent<JupiterController>().getHit();
         }
     }
 
     async void nowCanHit()
     {
-        await Task.Delay(500);
+        await Task.Delay(100);
         canHit = false;
     }
 }
