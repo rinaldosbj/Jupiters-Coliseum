@@ -12,7 +12,7 @@ public class PlayerMovement : MonoBehaviour
     public bool IsGravity { get; private set; }
 
     public float LastOnGroundTime { get; private set; }
-    
+
     public bool _isTransition;
     private bool _isJumpCut;
     private bool _isJumpFalling;
@@ -25,7 +25,7 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private LayerMask _groundLayer;
 
-    private void Awake() 
+    private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
     }
@@ -42,74 +42,80 @@ public class PlayerMovement : MonoBehaviour
         LastPressedJumpTime -= Time.deltaTime;
 
         _moveInput.x = Input.GetAxisRaw("Horizontal");
-        // _moveInput.y = Input.GetAxisRaw("Vertical");
+
+        if (_isTransition)
+        {
+            _moveInput.y = Input.GetAxisRaw("Vertical");
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                OnJumpInput();
+            }
+
+            if (Input.GetKeyUp(KeyCode.Space))
+            {
+                OnJumpUpInput();
+            }
+
+            if (!IsJumping)
+            {
+                if (Physics2D.OverlapBox(_groundCheckPoint.position, _groundCheckSize, 0, _groundLayer) && !IsJumping)
+                {
+                    LastOnGroundTime = Data.coyoteTime;
+                }
+            }
+
+            if (IsJumping && rb.velocity.y < 0)
+            {
+                IsJumping = false;
+            }
+
+            if (LastOnGroundTime > 0 && !IsJumping)
+            {
+                _isJumpCut = false;
+
+                if (!IsJumping)
+                    _isJumpFalling = false;
+            }
+
+            if (CanJump() && LastPressedJumpTime > 0)
+            {
+                IsJumping = true;
+                _isJumpCut = false;
+                _isJumpFalling = false;
+                Jump();
+            }
+
+            if (rb.velocity.y < 0 && _moveInput.y < 0)
+            {
+                SetGravityScale(Data.gravityScale * Data.fastFallGravityMult);
+                rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -Data.maxFastFallSpeed));
+            }
+            else if (_isJumpCut)
+            {
+                SetGravityScale(Data.gravityScale * Data.jumpCutGravityMult);
+                rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -Data.maxFallSpeed));
+            }
+            else if ((IsJumping || _isJumpFalling) && Mathf.Abs(rb.velocity.y) < Data.jumpHangTimeThreshold)
+            {
+                SetGravityScale(Data.gravityScale * Data.jumpHangGravityMult);
+            }
+            else if (rb.velocity.y < 0)
+            {
+                SetGravityScale(Data.gravityScale * Data.fallGravityMult);
+                rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -Data.maxFallSpeed));
+            }
+            else
+            {
+                SetGravityScale(Data.gravityScale);
+            }
+        }
+
 
         if (_moveInput.x != 0)
             CheckDirectionToFace(_moveInput.x > 0);
 
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            OnJumpInput();
-        }
 
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            OnJumpUpInput();
-        }
-
-        if (!IsJumping)
-        {
-            if (Physics2D.OverlapBox(_groundCheckPoint.position, _groundCheckSize, 0, _groundLayer) && !IsJumping)
-            {
-                LastOnGroundTime = Data.coyoteTime;
-            }       
-        }
-
-        if (IsJumping && rb.velocity.y < 0)
-        {
-            IsJumping = false;
-        }
-
-        if (LastOnGroundTime > 0 && !IsJumping)
-        {
-            _isJumpCut = false;
-
-            if(!IsJumping)
-                _isJumpFalling = false;
-        }
-
-        if (CanJump() && LastPressedJumpTime > 0)
-        {
-            IsJumping = true;
-            _isJumpCut = false;
-            _isJumpFalling = false;
-            Jump();
-        }
-
-        if (rb.velocity.y < 0 && _moveInput.y < 0)
-        {
-            SetGravityScale(Data.gravityScale * Data.fastFallGravityMult);
-            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -Data.maxFastFallSpeed));
-        }
-        else if (_isJumpCut)
-        {
-            SetGravityScale(Data.gravityScale * Data.jumpCutGravityMult);
-            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -Data.maxFallSpeed));
-        }
-        else if ((IsJumping || _isJumpFalling) && Mathf.Abs(rb.velocity.y) < Data.jumpHangTimeThreshold)
-        {
-            SetGravityScale(Data.gravityScale * Data.jumpHangGravityMult);
-        }
-        else if (rb.velocity.y < 0)
-        {
-            SetGravityScale(Data.gravityScale * Data.fallGravityMult);
-            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -Data.maxFallSpeed));
-        }
-        else
-        {
-            SetGravityScale(Data.gravityScale);
-        }
-    }   
+    }
 
     private void FixedUpdate()
     {
@@ -127,7 +133,8 @@ public class PlayerMovement : MonoBehaviour
             _isJumpCut = true;
     }
 
-    private void Run(float lerpAmount){
+    private void Run(float lerpAmount)
+    {
         float targetSpeed = _moveInput.x * Data.runMaxSpeed;
         targetSpeed = Mathf.Lerp(rb.velocity.x, targetSpeed, lerpAmount);
 
@@ -142,10 +149,10 @@ public class PlayerMovement : MonoBehaviour
             accelRate *= Data.jumpHangAccelerationMult;
             targetSpeed *= Data.jumpHangMaxSpeedMult;
         }
-        
-        if(Data.doConserveMomentum && Mathf.Abs(rb.velocity.x) > Mathf.Abs(targetSpeed) && Mathf.Sign(rb.velocity.x) == Mathf.Sign(targetSpeed) && Mathf.Abs(targetSpeed) > 0.01f && LastOnGroundTime < 0)
+
+        if (Data.doConserveMomentum && Mathf.Abs(rb.velocity.x) > Mathf.Abs(targetSpeed) && Mathf.Sign(rb.velocity.x) == Mathf.Sign(targetSpeed) && Mathf.Abs(targetSpeed) > 0.01f && LastOnGroundTime < 0)
         {
-            accelRate = 0; 
+            accelRate = 0;
         }
 
         float speedDif = targetSpeed - rb.velocity.x;
@@ -156,7 +163,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Turn()
     {
-        Vector3 scale = transform.localScale; 
+        Vector3 scale = transform.localScale;
         scale.x *= -1;
         transform.localScale = scale;
 
@@ -174,7 +181,7 @@ public class PlayerMovement : MonoBehaviour
 
         rb.AddForce(Vector2.up * force, ForceMode2D.Impulse);
     }
-    
+
     public void SetGravityScale(float scale)
     {
         rb.gravityScale = scale;
