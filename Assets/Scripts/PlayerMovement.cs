@@ -2,20 +2,18 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private float horizontal;
-    [SerializeField] private float speed = 8f;
-    [SerializeField] private float jumpingPower = 16f;
-    private bool isFacingRight = true;
-    public bool canJump = true;
     public PlayerData Data;
 
-    public Rigidbody2D rb { get; private set; }
+    public Rigidbody2D rb;
 
     public bool IsFacingRight { get; private set; }
     public bool IsJumping { get; private set; }
 
+    public bool IsGravity { get; private set; }
+
     public float LastOnGroundTime { get; private set; }
     
+    public bool _isTransition;
     private bool _isJumpCut;
     private bool _isJumpFalling;
 
@@ -44,7 +42,7 @@ public class PlayerMovement : MonoBehaviour
         LastPressedJumpTime -= Time.deltaTime;
 
         _moveInput.x = Input.GetAxisRaw("Horizontal");
-        _moveInput.y = Input.GetAxisRaw("Vertical");
+        // _moveInput.y = Input.GetAxisRaw("Vertical");
 
         if (_moveInput.x != 0)
             CheckDirectionToFace(_moveInput.x > 0);
@@ -191,6 +189,7 @@ public class PlayerMovement : MonoBehaviour
     private bool CanJump()
     {
         return LastOnGroundTime > 0 && !IsJumping;
+        print("oi");
     }
 
     private bool CanJumpCut()
