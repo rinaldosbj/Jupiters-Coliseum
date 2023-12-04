@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FallingPlatform : MonoBehaviour
 {
-    [SerializeField] private float platformSpeed = 0.03f;
+    [SerializeField] private float platformSpeed = 0.05f;
     [SerializeField] private float maxPosition = 20f;
     [SerializeField] private bool mustStop = true;
     [SerializeField] private float stopPosition = 10f;

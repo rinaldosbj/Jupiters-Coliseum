@@ -7,7 +7,7 @@ public class BallMovement : MonoBehaviour
 {
     // 12 ou -12
     [SerializeField] private bool isMovingRight = true;
-    [SerializeField] private float ballSpeed = 0.01f;
+    [SerializeField] private float ballSpeed = 0.1f;
     [SerializeField] private float maxPosition = 12f;
 
     void Update()

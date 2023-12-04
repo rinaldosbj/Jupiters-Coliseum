@@ -46,69 +46,9 @@ public class PlayerMovement : MonoBehaviour
         
         if (!_isTransition)
         {
-            
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                OnJumpInput();
-            }
-
-            if (Input.GetKeyUp(KeyCode.Space))
-            {
-                OnJumpUpInput();
-            }
-
-            if (!IsJumping)
-            {
-                if (Physics2D.OverlapBox(_groundCheckPoint.position, _groundCheckSize, 0, _groundLayer) && !IsJumping)
-                {
-                    LastOnGroundTime = Data.coyoteTime;
-                }
-            }
-
-            if (IsJumping && rb.velocity.y < 0)
-            {
-                IsJumping = false;
-            }
-
-            if (LastOnGroundTime > 0 && !IsJumping)
-            {
-                _isJumpCut = false;
-
-                if (!IsJumping)
-                    _isJumpFalling = false;
-            }
-
-            if (CanJump() && LastPressedJumpTime > 0)
-            {
-                IsJumping = true;
-                _isJumpCut = false;
-                _isJumpFalling = false;
-                Jump();
-            }
-
-            if (rb.velocity.y < 0 && _moveInput.y < 0)
-            {
-                SetGravityScale(Data.gravityScale * Data.fastFallGravityMult);
-                rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -Data.maxFastFallSpeed));
-            }
-            else if (_isJumpCut)
-            {
-                SetGravityScale(Data.gravityScale * Data.jumpCutGravityMult);
-                rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -Data.maxFallSpeed));
-            }
-            else if ((IsJumping || _isJumpFalling) && Mathf.Abs(rb.velocity.y) < Data.jumpHangTimeThreshold)
-            {
-                SetGravityScale(Data.gravityScale * Data.jumpHangGravityMult);
-            }
-            else if (rb.velocity.y < 0)
-            {
-                SetGravityScale(Data.gravityScale * Data.fallGravityMult);
-                rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -Data.maxFallSpeed));
-            }
-            else
-            {
-                SetGravityScale(Data.gravityScale);
-            }
+            handleMovement();
+        } else {
+            handleTransitionMovement();
         }
 
         if (_moveInput.x != 0)
@@ -118,6 +58,94 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         Run(1);
+    }
+
+    private void handleMovement(){
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            OnJumpInput();
+        }
+
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            OnJumpUpInput();
+        }
+
+        if (!IsJumping)
+        {
+            if (Physics2D.OverlapBox(_groundCheckPoint.position, _groundCheckSize, 0, _groundLayer) && !IsJumping)
+            {
+                LastOnGroundTime = Data.coyoteTime;
+            }
+        }
+
+        if (IsJumping && rb.velocity.y < 0)
+        {
+            IsJumping = false;
+        }
+
+        if (LastOnGroundTime > 0 && !IsJumping)
+        {
+            _isJumpCut = false;
+
+            if (!IsJumping)
+                _isJumpFalling = false;
+        }
+
+        if (CanJump() && LastPressedJumpTime > 0)
+        {
+            IsJumping = true;
+            _isJumpCut = false;
+            _isJumpFalling = false;
+            Jump();
+        }
+
+        if (rb.velocity.y < 0 && _moveInput.y < 0)
+        {
+            SetGravityScale(Data.gravityScale * Data.fastFallGravityMult);
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -Data.maxFastFallSpeed));
+        }
+        else if (_isJumpCut)
+        {
+            SetGravityScale(Data.gravityScale * Data.jumpCutGravityMult);
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -Data.maxFallSpeed));
+        }
+        else if ((IsJumping || _isJumpFalling) && Mathf.Abs(rb.velocity.y) < Data.jumpHangTimeThreshold)
+        {
+            SetGravityScale(Data.gravityScale * Data.jumpHangGravityMult);
+        }
+        else if (rb.velocity.y < 0)
+        {
+            SetGravityScale(Data.gravityScale * Data.fallGravityMult);
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -Data.maxFallSpeed));
+        }
+        else
+        {
+            SetGravityScale(Data.gravityScale);
+        }
+    }
+
+    private void handleTransitionMovement() {
+        float moveX = Input.GetAxisRaw("Horizontal");
+        float moveY = Input.GetAxisRaw("Vertical");
+
+        // Create a movement vector based on input axes
+        Vector2 moveDirection = new Vector2(moveX, moveY);
+
+        // Adjust the movement speed during transition
+        Vector2 newVelocity = moveDirection * Data.transitionMoveSpeed;
+
+        // Apply the velocity to the Rigidbody
+        rb.velocity = newVelocity;
+    }
+
+    private void MoveDuringTransition(Vector2 moveDirection)
+    {
+        // Ajuste da velocidade de movimento durante a transição
+        Vector2 newVelocity = moveDirection * Data.transitionMoveSpeed;
+
+        // Aplica a velocidade ao Rigidbody
+        rb.velocity = newVelocity;
     }
 
     public void OnJumpInput()

@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 public class EnemyLife : MonoBehaviour
 {
-    [SerializeField] private int life = 1;
+    [SerializeField] private int life = 2;
     private float timer = 0f;
     [SerializeField] private float cooldownTime = 1f;
     private bool canGetHit = true;

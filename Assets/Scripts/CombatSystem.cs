@@ -44,6 +44,10 @@ public class CombatSystem : MonoBehaviour
         if (Input.GetKey(KeyCode.W) && Input.GetKeyDown(KeyCode.Z) && canHit) {
             upAttack();
         }
+
+        if (Input.GetKey(KeyCode.S) && Input.GetKeyDown(KeyCode.Z) && canHit) {
+            downAttack();
+        }
         
     }
 
@@ -63,6 +67,24 @@ public class CombatSystem : MonoBehaviour
 
         nowCanHit();
         Debug.Log("Up attack");
+    }
+
+    void downAttack()
+    {
+        sprite.enabled = true;
+        collider.enabled = true;
+
+        // Calculate the rotation for the downward attack weapon (to point horizontally)
+        float rotationAngle = transform.localScale.x > 0 ? -90f : 90f; // Adjust the angle according to player's direction
+
+        // Set the rotation for the downward attack weapon
+        transform.localRotation = Quaternion.Euler(0f, 0f, rotationAngle);
+
+        // Set the position for the downward attack weapon (below the player)
+        transform.localPosition = new Vector3(0f, -1.5f, 0f); // Adjust the position if needed
+
+        nowCanHit();
+        Debug.Log("Down attack");
     }
 
     void regularAttack()

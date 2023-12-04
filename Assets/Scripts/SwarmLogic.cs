@@ -1,7 +1,8 @@
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.Events;
 
     public class SwarmLogic : MonoBehaviour
     {
@@ -18,6 +19,7 @@
         private bool floorIsMovingDown = false;
         private bool floorIsMovingUp = false;
         private float playerGravity;
+        private JupiterController jupiter;
         public SpriteRenderer sprite { get; private set; }
 
         private void Awake()
@@ -26,12 +28,21 @@
             moveScript = player.GetComponent<PlayerMovement>();
             playerGravity = player.GetComponent<Rigidbody2D>().gravityScale;
             sprite = GetComponent<SpriteRenderer>();
-            InvokeRepeating("RandomAttack", 3f, Random.Range(5f, 10f));
+            jupiter = GetComponentInChildren<JupiterController>();
+            StartRandomAttackInvocation();
+        }
+
+        private void StartRandomAttackInvocation()
+        {
+            if (jupiter.jupiterIsAlive)
+            {
+                InvokeRepeating("RandomAttack", 3f, Random.Range(5f, 10f));
+            }
         }
 
         void RandomAttack()
         {
-            int attackType = Random.Range(1, 2);
+            int attackType = Random.Range(0, 2);
 
             switch (attackType)
             {
@@ -59,10 +70,11 @@
         public void FallingPlatforms()
         {
             player.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 4);
-            player.GetComponent<Rigidbody2D>().gravityScale = 0.05f;
+            player.GetComponent<Rigidbody2D>().gravityScale = -8;
             moveScript._isTransition = true;
             floorIsMovingDown = true;
             //heightLimitator.SetActive(true);
+            Instantiate(spawnBirds, new Vector3(9f, cameraTransform.position.y, 0), Quaternion.identity);
             Instantiate(spawnBirds, new Vector3(9f, cameraTransform.position.y, 0), Quaternion.identity);
             zeroGravity();
         }
@@ -71,26 +83,31 @@
         {
             if (floorIsMovingDown)
             {
-                floor.transform.position = new Vector3(floor.transform.position.x, floor.transform.position.y - 0.004f, floor.transform.position.z);
+                floor.transform.position = new Vector3(floor.transform.position.x, floor.transform.position.y - 0.04f, floor.transform.position.z);
             }
             if (floorIsMovingUp)
             {
-                floor.transform.position = new Vector3(floor.transform.position.x, floor.transform.position.y + 0.004f, floor.transform.position.z);
+                floor.transform.position = new Vector3(floor.transform.position.x, floor.transform.position.y + 0.04f, floor.transform.position.z);
             }
         }
 
         async void zeroGravity()
         {
-            await Task.Delay(1000);
-            player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
-            player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
+            Instantiate(fallingPlatforms, new Vector3(0, cameraTransform.position.y + 16, 0), Quaternion.identity);
+            await Task.Delay(3000);
             floorIsMovingDown = false;
-            Instantiate(fallingPlatforms, new Vector3(-5.5f, cameraTransform.position.y + 16, 0), Quaternion.identity);
-            await Task.Delay(10);
+            await Task.Delay(8000);
             floorIsMovingUp = true;
-            await Task.Delay(1);
+            await Task.Delay(3000);
             floorIsMovingUp = false;
-            moveScript._isTransition = true;
+            moveScript._isTransition = false;
             heightLimitator.SetActive(false);
+            jupiter.GetComponent<JupiterController>().jupiterRevive();
+            StartRandomAttackInvocation();
+        }   
+
+        public void jupiterDied()
+        {
+            CancelInvoke("RandomAttack");   
         }
     }

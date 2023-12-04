@@ -66,4 +66,12 @@ public class PlayerLife : MonoBehaviour
             getHit(1);
         }
     }
+
+    private void OnBecameInvisible()
+    {
+        if (life > 0)
+        {
+            Die();
+        }
+    }
 }
