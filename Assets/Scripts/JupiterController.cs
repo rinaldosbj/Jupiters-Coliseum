@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class JupiterController : MonoBehaviour
 {
     [SerializeField] private int life = 1;
+    [SerializeField] private int actuallyLive = 10; // if 0 games ends
     private float timer = 0f;
     [SerializeField] private float cooldownTime = 1f;
     private bool canGetHit = true;
@@ -48,13 +50,19 @@ public class JupiterController : MonoBehaviour
         {
             Debug.Log("levo");
             life --;
+            actuallyLive --;
 
             SpriteRenderer sprite = swarmLogic.sprite;
             sprite.color = Color.red;
 
             canGetHit = false;
 
-            if (life == 0)
+            if (actuallyLive == 0)
+            {
+                GameObject.Find("LeaderboardRegister").GetComponent<LeaderBoard>().wonBattle();
+                SceneManager.LoadScene("LeaderBoard");
+            }
+            else if (life == 0)
             {
                 SwarmLogic swarmLogic = FindObjectOfType<SwarmLogic>();
                 swarmLogic.FallingPlatforms();

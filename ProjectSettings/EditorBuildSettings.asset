@@ -5,7 +5,19 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SceneTimer.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 77ecb6805edb14387a57b18712a89d57
+  - enabled: 1
+    path: Assets/Scenes/Game.unity
+    guid: 7b8c99daebde54a19befe727dc243322
+  - enabled: 1
+    path: Assets/Scenes/LeaderBoard.unity
+    guid: bc2e9f96fffa14faebbfa49838173ac5
+  - enabled: 1
+    path: Assets/Scenes/Control.unity
+    guid: d02e71eaeeef84169892fd558e29dae1
   m_configObjects: {}

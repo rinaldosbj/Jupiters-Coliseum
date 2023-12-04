@@ -45,7 +45,7 @@ public class LeaderBoard : MonoBehaviour
         {
             if (PlayerPrefs.GetString($"Won{count}") == "")
             {
-                PlayerPrefs.SetString($"Won{count}", $"{runNumber} {playerName}: {time}");
+                PlayerPrefs.SetString($"Won{count}", $"Run {runNumber}: {time}");
                 break;
             }
             string currentRecord = PlayerPrefs.GetString($"Won{count}");
@@ -91,7 +91,8 @@ public class LeaderBoard : MonoBehaviour
     {
         if (count == 3)
         {
-            PlayerPrefs.SetString("Won3", $"{runNumber} {playerName}: {time}");
+            // PlayerPrefs.SetString("Won3", $"{runNumber} {playerName}: {time}");
+            PlayerPrefs.SetString("Won3", $"Run {runNumber}: {time}");
         }
         else if (count == 2)
         {
@@ -99,7 +100,7 @@ public class LeaderBoard : MonoBehaviour
             {
                 PlayerPrefs.SetString("Won3", $"{PlayerPrefs.GetString("Won2")}");
             }
-            PlayerPrefs.SetString("Won2", $"{runNumber} {playerName}: {time}");
+            PlayerPrefs.SetString("Won2", $"Run {runNumber}: {time}");
         }
         else if (count == 1)
         {
@@ -108,7 +109,7 @@ public class LeaderBoard : MonoBehaviour
                 PlayerPrefs.SetString("Won3", $"{PlayerPrefs.GetString("Won2")}");
             }
             PlayerPrefs.SetString("Won2", $"{PlayerPrefs.GetString("Won1")}");
-            PlayerPrefs.SetString("Won1", $"{runNumber} {playerName}: {time}");
+            PlayerPrefs.SetString("Won1", $"Run {runNumber}: {time}");
         }
     }
 
